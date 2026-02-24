@@ -6,15 +6,14 @@ require("dotenv").config();
 const app = express();
 
 // Middlewares
-const cors = require("cors");
-
 app.use(cors({
   origin: [
     "http://localhost:3000",
-    "roaring-panda-1b0386.netlify.app"
+    "https://roaring-panda-1b0386.netlify.app"
   ],
   credentials: true
 }));
+
 app.use(express.json());
 
 // Connect MongoDB

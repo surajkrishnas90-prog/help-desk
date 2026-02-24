@@ -15,29 +15,23 @@ const allowedOrigins = [
 ];
 
 app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like Postman)
-    if (!origin) return callback(null, true);
-
-    if (allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    } else {
-      return callback(new Error("CORS not allowed"));
-    }
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true); // Postman / curl
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("CORS not allowed"));
   },
   credentials: true
 }));
-app.use(express.json());
 
+app.use(express.json());
 
 /* ===============================
    HEALTH CHECK
 ================================ */
 
 app.get("/", (req, res) => {
-  res.status(200).send("API is running");
+  res.status(200).json({ status: "API running" });
 });
-
 
 /* ===============================
    DATABASE
@@ -46,10 +40,9 @@ app.get("/", (req, res) => {
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => {
-    console.error("MongoDB Error:", err);
+    console.error("MongoDB Error:", err.message);
     process.exit(1);
   });
-
 
 /* ===============================
    ROUTES
@@ -58,7 +51,6 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/tickets", require("./routes/tickets"));
 
-
 /* ===============================
    SERVER
 ================================ */
@@ -66,5 +58,5 @@ app.use("/api/tickets", require("./routes/tickets"));
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log(`Server running on port ${PORT}`);
 });

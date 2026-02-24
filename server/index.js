@@ -9,21 +9,14 @@ const app = express();
    MIDDLEWARES
 ================================ */
 
-// CORS (Netlify + Localhost)
 app.use(cors({
   origin: [
     "http://localhost:3000",
     "https://roaring-panda-1b0386.netlify.app"
   ],
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
+  credentials: true
 }));
 
-// Handle preflight requests
-app.options("*", cors());
-
-// Body parser
 app.use(express.json());
 
 
@@ -40,11 +33,10 @@ app.get("/", (req, res) => {
    DATABASE
 ================================ */
 
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch((err) => {
-    console.error("MongoDB Connection Error:", err);
+  .catch(err => {
+    console.error("MongoDB Error:", err);
     process.exit(1);
   });
 
@@ -64,5 +56,5 @@ app.use("/api/tickets", require("./routes/tickets"));
 const PORT = process.env.PORT || 10000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on port " + PORT);
 });

@@ -14,14 +14,7 @@ const allowedOrigins = [
   "https://roaring-panda-1b0386.netlify.app"
 ];
 
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true); // Postman / curl
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("CORS not allowed"));
-  },
-  credentials: true
-}));
+app.use(cors());
 
 app.use(express.json());
 

@@ -9,14 +9,24 @@ const app = express();
    MIDDLEWARES
 ================================ */
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://roaring-panda-1b0386.netlify.app"
+];
+
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "https://roaring-panda-1b0386.netlify.app"
-  ],
+  origin: function (origin, callback) {
+    // allow requests with no origin (like Postman)
+    if (!origin) return callback(null, true);
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    } else {
+      return callback(new Error("CORS not allowed"));
+    }
+  },
   credentials: true
 }));
-
 app.use(express.json());
 
 
